@@ -23,7 +23,6 @@ class _HomePageState extends State<HomePage>
   late Timer _timer;
   double _start = 0.0;
   int count = 0;
-  /* late ChartSeriesController? _chartSeriesController; */
 
   void startTimer() {
     const oneTic = const Duration(seconds: 3);
@@ -45,9 +44,7 @@ class _HomePageState extends State<HomePage>
   }
 
   void addPluseSignal() {
-    setState(() {
-      chartData = getChartData();
-    });
+    chartData = getChartData();
   }
 
   List<HeartRate> getChartData() {
@@ -63,24 +60,15 @@ class _HomePageState extends State<HomePage>
     return data;
   }
 
-  // Method to generate random numbers in the given range
-  double getRandomInt(int min, int max) {
-    final Random random = Random();
-    return double.parse((min + random.nextInt(max - min)).toString());
-  }
-
   @override
   void initState() {
-    /* _chartSeriesController=ChartSeriesController(); */
     for (int i = 0; i < 1080; i++) {
       chartData.add(
         HeartRate(i, 0),
       );
     }
 
-    Timer(Duration(seconds: 1), () {
-      startTimer();
-    });
+    startTimer();
 
     super.initState();
   }
@@ -131,7 +119,7 @@ class _HomePageState extends State<HomePage>
               flex: 50,
               child: Container(
                 child: SfCartesianChart(
-                  margin: EdgeInsets.all(0),
+                  margin: EdgeInsets.symmetric(vertical: 100, horizontal: 0),
                   plotAreaBorderColor: AppColor.background,
                   enableSideBySideSeriesPlacement: false,
                   primaryXAxis: NumericAxis(
@@ -140,15 +128,15 @@ class _HomePageState extends State<HomePage>
                     edgeLabelPlacement: EdgeLabelPlacement.shift,
                   ),
                   primaryYAxis: NumericAxis(
-                      visibleMaximum: 1.05,
-                      visibleMinimum: -0.65,
-                      isVisible: false,
-                      majorGridLines: MajorGridLines(width: 0),
-                      interval: 5),
+                    visibleMaximum: 1.05,
+                    visibleMinimum: -0.65,
+                    isVisible: false,
+                    majorGridLines: MajorGridLines(width: 0),
+                    interval: 5,
+                  ),
                   series: <ChartSeries>[
-                    // Renders fast line chart
                     FastLineSeries<HeartRate, int>(
-                      animationDuration: 3000,
+                      animationDuration: count == 0 || count == 1080 ? 0 : 3000,
                       color: AppColor.primary_blue,
                       width: 1.5,
                       dataSource: chartData,
