@@ -27,7 +27,7 @@ class _HomePageState extends State<HomePage>
 
   // on each ontTic it will update the chartGraph list
   void startTimer() {
-    const oneTic = const Duration(milliseconds: 500);
+    const oneTic = const Duration(milliseconds: 125);
     _timer = new Timer.periodic(
       oneTic,
       (Timer timer) {
@@ -37,7 +37,7 @@ class _HomePageState extends State<HomePage>
           });
         } else {
           setState(() {
-            _start = _start + 0.5;
+            _start = _start + 0.125;
           });
           addPluseSignal();
         }
@@ -50,7 +50,7 @@ class _HomePageState extends State<HomePage>
       if (count == 21600) {
         count = 0;
       }
-      for (int i = 0; i < 180; i++) {
+      for (int i = 0; i < 45; i++) {
         chartData.removeAt(0);
         chartData.add(HeartRate(index, pluse_signal[count]));
         index++;
@@ -59,7 +59,7 @@ class _HomePageState extends State<HomePage>
     });
   }
 
-  List<HeartRate> getChartData() {
+  /*  List<HeartRate> getChartData() {
     List<HeartRate> data = [];
     if (count == 21600) {
       count = 0;
@@ -70,7 +70,7 @@ class _HomePageState extends State<HomePage>
     }
 
     return data;
-  }
+  } */
 
   /* List<HeartRate> getChartData() {
     List<HeartRate> data = [];
