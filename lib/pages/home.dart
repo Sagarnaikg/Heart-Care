@@ -23,9 +23,11 @@ class _HomePageState extends State<HomePage>
   late Timer _timer;
   double _start = 0.0;
   int count = 0;
+  int index = 1079;
 
+  // on each ontTic it will update the chartGraph list
   void startTimer() {
-    const oneTic = const Duration(seconds: 3);
+    const oneTic = const Duration(milliseconds: 500);
     _timer = new Timer.periodic(
       oneTic,
       (Timer timer) {
@@ -35,7 +37,7 @@ class _HomePageState extends State<HomePage>
           });
         } else {
           setState(() {
-            _start = _start + 3;
+            _start = _start + 0.5;
           });
           addPluseSignal();
         }
@@ -44,10 +46,33 @@ class _HomePageState extends State<HomePage>
   }
 
   void addPluseSignal() {
-    chartData = getChartData();
+    setState(() {
+      if (count == 21600) {
+        count = 0;
+      }
+      for (int i = 0; i < 180; i++) {
+        chartData.removeAt(0);
+        chartData.add(HeartRate(index, pluse_signal[count]));
+        index++;
+        count++;
+      }
+    });
   }
 
   List<HeartRate> getChartData() {
+    List<HeartRate> data = [];
+    if (count == 21600) {
+      count = 0;
+    }
+    for (int i = 0; i < 360; i++) {
+      data.add(HeartRate(count, pluse_signal[count]));
+      count++;
+    }
+
+    return data;
+  }
+
+  /* List<HeartRate> getChartData() {
     List<HeartRate> data = [];
     if (count == 21600) {
       count = 0;
@@ -58,10 +83,11 @@ class _HomePageState extends State<HomePage>
     }
 
     return data;
-  }
+  } */
 
   @override
   void initState() {
+    // will create 3sec frame of graph
     for (int i = 0; i < 1080; i++) {
       chartData.add(
         HeartRate(i, 0),
@@ -128,7 +154,7 @@ class _HomePageState extends State<HomePage>
                     edgeLabelPlacement: EdgeLabelPlacement.shift,
                   ),
                   primaryYAxis: NumericAxis(
-                    visibleMaximum: 1.05,
+                    visibleMaximum: 1.5,
                     visibleMinimum: -0.65,
                     isVisible: false,
                     majorGridLines: MajorGridLines(width: 0),
@@ -136,7 +162,8 @@ class _HomePageState extends State<HomePage>
                   ),
                   series: <ChartSeries>[
                     FastLineSeries<HeartRate, int>(
-                      animationDuration: count == 0 || count == 1080 ? 0 : 3000,
+                      animationDuration: 0,
+                      /* count == 0 || count == 1080 ? 0 : 3000, */
                       color: AppColor.primary_blue,
                       width: 1.5,
                       dataSource: chartData,
