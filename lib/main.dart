@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:heart_beat_monitor/constants/theme.dart';
-import 'package:heart_beat_monitor/pages/home.dart';
+import 'package:heart_beat_monitor/pages/home_page/screen.dart';
 
 void main() {
   runApp(MyApp());
