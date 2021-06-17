@@ -96,38 +96,13 @@ class HomeBloc {
       (Timer timer) {
         if (timerStartValueStreamController.value == 60) {
           timer.cancel();
-          addEmptySignal();
-        } else {
-          double start = timerStartValueStreamController.value;
-          setTimerStartValue!(start + 0.125);
-          addPluseSignal();
-        }
-      },
-    );
-  }
-
-  void addEmptySignal() {
-    const oneTic = const Duration(milliseconds: 125);
-    _timer = new Timer.periodic(
-      oneTic,
-      (Timer timer) {
-        if (timerStartValueStreamController.value == 61.375) {
-          timer.cancel();
           setTimerStartValue!(0);
           setbeatsListIndex!(0);
           setTimerState!(false);
         } else {
-          for (int i = 0; i < 45; i++) {
-            List<HeartRate> chartData = chartDataStreamController.value;
-            chartData.removeAt(0);
-            chartData
-                .add(HeartRate(chartDataListIndexStreamController.value, -0.3));
-            setChartData!(chartData);
-            int index = chartDataListIndexStreamController.value;
-            setchartDataListIndex!(index + 1);
-          }
           double start = timerStartValueStreamController.value;
           setTimerStartValue!(start + 0.125);
+          addPluseSignal();
         }
       },
     );
@@ -140,8 +115,20 @@ class HomeBloc {
     for (int i = 0; i < 45; i++) {
       List<HeartRate> chartData = chartDataStreamController.value;
       chartData.removeAt(0);
-      chartData.add(HeartRate(chartDataListIndexStreamController.value,
-          pluse_signal[beatsListIndexStreamController.value]));
+      chartData.add(HeartRate(
+          chartDataListIndexStreamController.value,
+          pluse_signal[beatsListIndexStreamController.value] > 0
+              ? -0.3
+              : pluse_signal[beatsListIndexStreamController.value]));
+
+      chartData.replaceRange(539, 540, [
+        HeartRate(
+            chartDataListIndexStreamController.value,
+            fingerTouchStateStreamController.value == true
+                ? pluse_signal[beatsListIndexStreamController.value]
+                : -0.3)
+      ]);
+
       setChartData!(chartData);
       int index = chartDataListIndexStreamController.value;
       setchartDataListIndex!(index + 1);

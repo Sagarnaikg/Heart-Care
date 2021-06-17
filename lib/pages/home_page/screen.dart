@@ -39,7 +39,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     builder: (context, snapshot) {
                       try {
                         return SfCartesianChart(
-                          margin: EdgeInsets.all(0),
+                          margin: EdgeInsets.symmetric(
+                            vertical: 35,
+                            horizontal: 0,
+                          ),
                           plotAreaBorderColor: AppColor.background,
                           enableSideBySideSeriesPlacement: false,
                           primaryXAxis: NumericAxis(
@@ -57,7 +60,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                           series: <ChartSeries>[
                             FastLineSeries<HeartRate, int>(
                               gradient: LinearGradient(
-                                stops: [0.2, 0.55, 0.25],
+                                stops: [0.2, 0.496, 0.32],
                                 colors: [
                                   Color(0x70A2E5DF),
                                   Color(0xffA2E5DF),
@@ -68,8 +71,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                               color: AppColor.primary_blue,
                               width: 2,
                               dataSource: snapshot.data,
-                              xValueMapper: (HeartRate data, _) =>
-                                  data.countTime,
+                              xValueMapper: (HeartRate data, _) => _,
                               yValueMapper: (HeartRate data, _) => data.signal,
                             ),
                           ],
@@ -123,48 +125,18 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                         height: 70,
                                         width: 70,
                                       ),
-                                      StreamBuilder<dynamic>(
-                                          stream: _bloc.timerStartValueStream,
-                                          builder: (context, snapshot) {
-                                            if (snapshot.data == null) {
-                                              return SfRadialGauge(axes: <
-                                                  RadialAxis>[
-                                                RadialAxis(
-                                                  minimum: 0,
-                                                  maximum: 61.375,
-                                                  showLabels: false,
-                                                  showTicks: false,
-                                                  startAngle: 270,
-                                                  endAngle: 270,
-                                                  radiusFactor: 0.4,
-                                                  pointers: <GaugePointer>[
-                                                    RangePointer(
-                                                      animationDuration: 1000,
-                                                      value: 0,
-                                                      cornerStyle: Graph
-                                                          .CornerStyle.bothFlat,
-                                                      width: 0.1,
-                                                      sizeUnit:
-                                                          GaugeSizeUnit.factor,
-                                                      color:
-                                                          AppColor.primary_blue,
-                                                    )
-                                                  ],
-                                                  axisLineStyle: AxisLineStyle(
-                                                    thickness: 0.1,
-                                                    color: Color(0x15A2E5DF),
-                                                    thicknessUnit:
-                                                        GaugeSizeUnit.factor,
-                                                  ),
-                                                )
-                                              ]);
-                                            }
-
-                                            return SfRadialGauge(
-                                                axes: <RadialAxis>[
+                                      Container(
+                                        width: 200,
+                                        height: 200,
+                                        child: StreamBuilder<dynamic>(
+                                            stream: _bloc.timerStartValueStream,
+                                            builder: (context, snapshot) {
+                                              if (snapshot.data == null) {
+                                                return SfRadialGauge(axes: <
+                                                    RadialAxis>[
                                                   RadialAxis(
                                                     minimum: 0,
-                                                    maximum: 61.375,
+                                                    maximum: 60,
                                                     showLabels: false,
                                                     showTicks: false,
                                                     startAngle: 270,
@@ -173,7 +145,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                                     pointers: <GaugePointer>[
                                                       RangePointer(
                                                         animationDuration: 1000,
-                                                        value: snapshot.data,
+                                                        value: 0,
                                                         cornerStyle: Graph
                                                             .CornerStyle
                                                             .bothFlat,
@@ -193,7 +165,41 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                                     ),
                                                   )
                                                 ]);
-                                          }),
+                                              }
+
+                                              return SfRadialGauge(axes: <
+                                                  RadialAxis>[
+                                                RadialAxis(
+                                                  minimum: 0,
+                                                  maximum: 61.375,
+                                                  showLabels: false,
+                                                  showTicks: false,
+                                                  startAngle: 270,
+                                                  endAngle: 270,
+                                                  radiusFactor: 0.4,
+                                                  pointers: <GaugePointer>[
+                                                    RangePointer(
+                                                      animationDuration: 1000,
+                                                      value: snapshot.data,
+                                                      cornerStyle: Graph
+                                                          .CornerStyle.bothFlat,
+                                                      width: 0.1,
+                                                      sizeUnit:
+                                                          GaugeSizeUnit.factor,
+                                                      color:
+                                                          AppColor.primary_blue,
+                                                    )
+                                                  ],
+                                                  axisLineStyle: AxisLineStyle(
+                                                    thickness: 0.1,
+                                                    color: Color(0x15A2E5DF),
+                                                    thicknessUnit:
+                                                        GaugeSizeUnit.factor,
+                                                  ),
+                                                )
+                                              ]);
+                                            }),
+                                      ),
                                     ],
                                   ),
                                 );
@@ -244,7 +250,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                   axes: <RadialAxis>[
                                     RadialAxis(
                                       minimum: 0,
-                                      maximum: 61.375,
+                                      maximum: 60,
                                       showLabels: false,
                                       showTicks: false,
                                       startAngle: 270,
@@ -284,6 +290,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                           fontSize: 14,
                           color: AppColor.primary_blue,
                           fontWeight: FontWeight.bold),
+                    ),
+                    SizedBox(
+                      width: 10,
                     ),
                   ],
                 ),
