@@ -6,6 +6,11 @@ import 'package:heart_beat_monitor/models/heart_rate.dart';
 import 'package:rxdart/rxdart.dart';
 
 class HomeBloc {
+  // variables
+  Random rng = new Random();
+  Timer? _timer;
+  bool pluseUp = false;
+
   final chartDataStreamController = BehaviorSubject<List<HeartRate>>.seeded([]);
 
   Stream<List<HeartRate>> get chartDataStream =>
@@ -36,6 +41,38 @@ class HomeBloc {
           : beatsListIndexStreamController.sink.add;
 
   final chartDataListIndexStreamController = BehaviorSubject<int>.seeded(1079);
+
+  final heartBeatStreamController = BehaviorSubject<int>.seeded(0);
+
+  Stream<int> get heartBeatStream => heartBeatStreamController.stream;
+
+  Function(int)? get setHeartBeat => heartBeatStreamController.isClosed
+      ? null
+      : heartBeatStreamController.sink.add;
+
+  final maxHeartBeatStreamController = BehaviorSubject<int>.seeded(0);
+
+  Stream<int> get maxHeartBeatStream => maxHeartBeatStreamController.stream;
+
+  Function(int)? get setMaxHeartBeat => maxHeartBeatStreamController.isClosed
+      ? null
+      : maxHeartBeatStreamController.sink.add;
+
+  final minHeartBeatStreamController = BehaviorSubject<int>.seeded(0);
+
+  Stream<int> get minHeartBeatStream => minHeartBeatStreamController.stream;
+
+  Function(int)? get setMinHeartBeat => minHeartBeatStreamController.isClosed
+      ? null
+      : minHeartBeatStreamController.sink.add;
+
+  final avgHeartBeatStreamController = BehaviorSubject<int>.seeded(0);
+
+  Stream<int> get avgHeartBeatStream => avgHeartBeatStreamController.stream;
+
+  Function(int)? get setAvgHeartBeat => avgHeartBeatStreamController.isClosed
+      ? null
+      : avgHeartBeatStreamController.sink.add;
 
   Stream<int> get chartDataListIndexStream =>
       chartDataListIndexStreamController.stream;
@@ -74,10 +111,6 @@ class HomeBloc {
     setChartData!(chartData);
   }
 
-  // variables
-  Random rng = new Random();
-  Timer? _timer;
-
   void startReader() {
     setTimerState!(true);
     if (_timer == null) {
@@ -89,16 +122,46 @@ class HomeBloc {
     }
   }
 
+  void resetData() {
+    setTimerStartValue!(0);
+    setbeatsListIndex!(0);
+    setTimerState!(false);
+
+    if (heartBeatStreamController.value > maxHeartBeatStreamController.value) {
+      setMaxHeartBeat!(heartBeatStreamController.value);
+    }
+
+    if (minHeartBeatStreamController.value == 0) {
+      setMinHeartBeat!(heartBeatStreamController.value);
+    } else if (heartBeatStreamController.value <
+        minHeartBeatStreamController.value) {
+      setMinHeartBeat!(heartBeatStreamController.value);
+    }
+
+    if (avgHeartBeatStreamController.value == 0) {
+      setAvgHeartBeat!(heartBeatStreamController.value);
+    } else {
+      int preAvgHeartBeat = avgHeartBeatStreamController.value;
+
+      var avgHeartBeat =
+          (preAvgHeartBeat + heartBeatStreamController.value) / 2;
+
+      setAvgHeartBeat!(avgHeartBeat.round());
+    }
+  }
+
   void startTimer() {
+    if (heartBeatStreamController.value != 0) {
+      setHeartBeat!(0);
+    }
+
     const oneTic = const Duration(milliseconds: 125);
     _timer = new Timer.periodic(
       oneTic,
       (Timer timer) {
         if (timerStartValueStreamController.value == 60) {
           timer.cancel();
-          setTimerStartValue!(0);
-          setbeatsListIndex!(0);
-          setTimerState!(false);
+          resetData();
         } else {
           double start = timerStartValueStreamController.value;
           setTimerStartValue!(start + 0.125);
@@ -112,6 +175,7 @@ class HomeBloc {
     if (beatsListIndexStreamController.value == 21600) {
       setbeatsListIndex!(0);
     }
+
     for (int i = 0; i < 45; i++) {
       List<HeartRate> chartData = chartDataStreamController.value;
       chartData.removeAt(0);
@@ -129,6 +193,13 @@ class HomeBloc {
                 : -0.3)
       ]);
 
+      if (chartData[539].signal > 0 && pluseUp == false) {
+        setHeartBeat!(heartBeatStreamController.value + 1);
+        pluseUp = true;
+      } else if (chartData[539].signal < 0 && pluseUp == true) {
+        pluseUp = false;
+      }
+
       setChartData!(chartData);
       int index = chartDataListIndexStreamController.value;
       setchartDataListIndex!(index + 1);
@@ -145,5 +216,9 @@ class HomeBloc {
     chartDataListIndexStreamController.close();
     timerStateStreamController.close();
     fingerTouchStateStreamController.close();
+    heartBeatStreamController.close();
+    maxHeartBeatStreamController.close();
+    minHeartBeatStreamController.close();
+    avgHeartBeatStreamController.close();
   }
 }

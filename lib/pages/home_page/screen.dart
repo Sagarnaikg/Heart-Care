@@ -299,25 +299,29 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                 SizedBox(
                   height: 3,
                 ),
-                RichText(
-                    text: TextSpan(
-                  children: [
-                    TextSpan(
-                      text: "78",
-                      style: TextStyle(
-                        fontSize: 76,
-                        color: AppColor.white,
-                      ),
-                    ),
-                    TextSpan(
-                      text: " bpm",
-                      style: TextStyle(
-                        fontSize: 32,
-                        color: AppColor.light_black,
-                      ),
-                    ),
-                  ],
-                ))
+                StreamBuilder<dynamic>(
+                    stream: _bloc.heartBeatStream,
+                    builder: (context, snapshot) {
+                      return RichText(
+                          text: TextSpan(
+                        children: [
+                          TextSpan(
+                            text: "${snapshot.data ?? 0}",
+                            style: TextStyle(
+                              fontSize: 76,
+                              color: AppColor.white,
+                            ),
+                          ),
+                          TextSpan(
+                            text: " bpm",
+                            style: TextStyle(
+                              fontSize: 32,
+                              color: AppColor.light_black,
+                            ),
+                          ),
+                        ],
+                      ));
+                    })
               ],
             ),
             Row(
@@ -333,13 +337,17 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                         color: AppColor.light_black,
                       ),
                     ),
-                    Text(
-                      "70",
-                      style: TextStyle(
-                        fontSize: 42,
-                        color: AppColor.primary_blue,
-                      ),
-                    ),
+                    StreamBuilder<dynamic>(
+                        stream: _bloc.maxHeartBeatStream,
+                        builder: (context, snapshot) {
+                          return Text(
+                            "${snapshot.data ?? 0}",
+                            style: TextStyle(
+                              fontSize: 42,
+                              color: AppColor.primary_blue,
+                            ),
+                          );
+                        }),
                   ],
                 ),
                 Column(
@@ -352,13 +360,17 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                         color: AppColor.light_black,
                       ),
                     ),
-                    Text(
-                      "50",
-                      style: TextStyle(
-                        fontSize: 42,
-                        color: AppColor.primary_blue,
-                      ),
-                    ),
+                    StreamBuilder<dynamic>(
+                        stream: _bloc.minHeartBeatStream,
+                        builder: (context, snapshot) {
+                          return Text(
+                            "${snapshot.data ?? 0}",
+                            style: TextStyle(
+                              fontSize: 42,
+                              color: AppColor.primary_blue,
+                            ),
+                          );
+                        }),
                   ],
                 ),
                 Column(
@@ -371,13 +383,17 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                         color: AppColor.light_black,
                       ),
                     ),
-                    Text(
-                      "65",
-                      style: TextStyle(
-                        fontSize: 42,
-                        color: AppColor.primary_blue,
-                      ),
-                    ),
+                    StreamBuilder<dynamic>(
+                        stream: _bloc.avgHeartBeatStream,
+                        builder: (context, snapshot) {
+                          return Text(
+                            "${snapshot.data ?? 0}",
+                            style: TextStyle(
+                              fontSize: 42,
+                              color: AppColor.primary_blue,
+                            ),
+                          );
+                        }),
                   ],
                 ),
               ],
