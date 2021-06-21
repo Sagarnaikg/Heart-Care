@@ -1,15 +1,19 @@
 import 'dart:async';
 import 'dart:math';
-import 'package:flutter/material.dart';
-import 'package:heart_beat_monitor/data/variables.dart';
+import 'package:heart_beat_monitor/db/db_service.dart';
+import 'package:heart_beat_monitor/db/heart_beat_reading.dart';
 import 'package:heart_beat_monitor/models/heart_rate.dart';
 import 'package:rxdart/rxdart.dart';
+import 'package:logger/logger.dart';
 
 class HomeBloc {
   // variables
   Random rng = new Random();
   Timer? _timer;
   bool pluseUp = false;
+  late DBService db;
+  late Logger log;
+  late List<double> pluse_signal;
 
   final chartDataStreamController = BehaviorSubject<List<HeartRate>>.seeded([]);
 
@@ -101,7 +105,20 @@ class HomeBloc {
           : fingerTouchStateStreamController.sink.add;
 
   HomeBloc() {
-    // will create 3sec frame of graph
+    db = new DBService();
+    log = Logger(
+      printer: PrettyPrinter(
+        methodCount: 0,
+        errorMethodCount: 1,
+        colors: true,
+        printEmojis: false,
+      ),
+    );
+    setData();
+  }
+
+  void setData() async {
+    // chart data
     List<HeartRate> chartData = [];
     for (int i = 0; i < 1080; i++) {
       chartData.add(
@@ -109,6 +126,25 @@ class HomeBloc {
       );
     }
     setChartData!(chartData);
+
+    //
+    pluse_signal = pluse_signal_values;
+
+    // max,min,avg vales
+    await db.init();
+    setMaxHeartBeat!(db.getMaxHBFromDB());
+    setMinHeartBeat!(db.getMinHBFromDB());
+    setAvgHeartBeat!(db.getAvgHBFromDB());
+  }
+
+  String getDisplayText(int heartBeat) {
+    if (heartBeat ~/ 10 == 0) {
+      return "Single";
+    } else if (heartBeat ~/ 10 > 0 && heartBeat ~/ 10 < 10) {
+      return "Double";
+    } else {
+      return "else";
+    }
   }
 
   void startReader() {
@@ -124,22 +160,25 @@ class HomeBloc {
 
   void resetData() {
     setTimerStartValue!(0);
-    setbeatsListIndex!(0);
     setTimerState!(false);
 
     if (heartBeatStreamController.value > maxHeartBeatStreamController.value) {
       setMaxHeartBeat!(heartBeatStreamController.value);
+      db.setMaxHBToDB(heartBeatStreamController.value);
     }
 
     if (minHeartBeatStreamController.value == 0) {
       setMinHeartBeat!(heartBeatStreamController.value);
+      db.setMinHBToDB(heartBeatStreamController.value);
     } else if (heartBeatStreamController.value <
         minHeartBeatStreamController.value) {
       setMinHeartBeat!(heartBeatStreamController.value);
+      db.setMinHBToDB(heartBeatStreamController.value);
     }
 
     if (avgHeartBeatStreamController.value == 0) {
       setAvgHeartBeat!(heartBeatStreamController.value);
+      db.setAvgHBToDB(heartBeatStreamController.value);
     } else {
       int preAvgHeartBeat = avgHeartBeatStreamController.value;
 
@@ -147,7 +186,15 @@ class HomeBloc {
           (preAvgHeartBeat + heartBeatStreamController.value) / 2;
 
       setAvgHeartBeat!(avgHeartBeat.round());
+      db.setAvgHBToDB(avgHeartBeat.round());
     }
+
+    log.v({
+      "heatBeat": heartBeatStreamController.value,
+      "max heart beat": maxHeartBeatStreamController.value,
+      "min heart beat": minHeartBeatStreamController.value,
+      "avg heart beat": avgHeartBeatStreamController.value,
+    });
   }
 
   void startTimer() {
@@ -172,7 +219,7 @@ class HomeBloc {
   }
 
   void addPluseSignal() {
-    if (beatsListIndexStreamController.value == 21600) {
+    if (beatsListIndexStreamController.value == 151200) {
       setbeatsListIndex!(0);
     }
 

@@ -5,7 +5,6 @@ import 'package:heart_beat_monitor/pages/home_page/bloc.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:syncfusion_flutter_gauges/gauges.dart';
 import 'package:syncfusion_flutter_gauges/gauges.dart' as Graph;
-import 'package:flutter_svg/flutter_svg.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -89,12 +88,12 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                   child: Center(
                 child: GestureDetector(
                   onLongPressStart: (_) {
-                    print("on the tap");
+                    _bloc.log.v("On the reader");
                     _bloc.startReader();
                     _bloc.setFingerTouchState!(true);
                   },
                   onLongPressEnd: (_) {
-                    print("Off the tap");
+                    _bloc.log.v("Off the reader");
                     _bloc.setFingerTouchState!(false);
                   },
                   child: StreamBuilder<dynamic>(
@@ -302,6 +301,85 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                 StreamBuilder<dynamic>(
                     stream: _bloc.heartBeatStream,
                     builder: (context, snapshot) {
+                      String type = _bloc.getDisplayText(snapshot.data ?? 0);
+
+                      switch (type) {
+                        case "Single":
+                          return RichText(
+                              text: TextSpan(
+                            children: [
+                              TextSpan(
+                                text: "00",
+                                style: TextStyle(
+                                  fontSize: 76,
+                                  color: Color(0xff313244),
+                                ),
+                              ),
+                              TextSpan(
+                                text: "${snapshot.data ?? 0}",
+                                style: TextStyle(
+                                  fontSize: 76,
+                                  color: AppColor.white,
+                                ),
+                              ),
+                              TextSpan(
+                                text: " bpm",
+                                style: TextStyle(
+                                  fontSize: 32,
+                                  color: AppColor.light_black,
+                                ),
+                              ),
+                            ],
+                          ));
+                        case "Double":
+                          return RichText(
+                              text: TextSpan(
+                            children: [
+                              TextSpan(
+                                text: "0",
+                                style: TextStyle(
+                                  fontSize: 76,
+                                  color: Color(0xff313244),
+                                ),
+                              ),
+                              TextSpan(
+                                text: "${snapshot.data ?? 0}",
+                                style: TextStyle(
+                                  fontSize: 76,
+                                  color: AppColor.white,
+                                ),
+                              ),
+                              TextSpan(
+                                text: " bpm",
+                                style: TextStyle(
+                                  fontSize: 32,
+                                  color: AppColor.light_black,
+                                ),
+                              ),
+                            ],
+                          ));
+                        default:
+                          return RichText(
+                              text: TextSpan(
+                            children: [
+                              TextSpan(
+                                text: "${snapshot.data ?? 0}",
+                                style: TextStyle(
+                                  fontSize: 76,
+                                  color: AppColor.white,
+                                ),
+                              ),
+                              TextSpan(
+                                text: " bpm",
+                                style: TextStyle(
+                                  fontSize: 32,
+                                  color: AppColor.light_black,
+                                ),
+                              ),
+                            ],
+                          ));
+                      }
+
                       return RichText(
                           text: TextSpan(
                         children: [
@@ -340,12 +418,23 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     StreamBuilder<dynamic>(
                         stream: _bloc.maxHeartBeatStream,
                         builder: (context, snapshot) {
-                          return Text(
-                            "${snapshot.data ?? 0}",
-                            style: TextStyle(
-                              fontSize: 42,
-                              color: AppColor.primary_blue,
-                            ),
+                          return TweenAnimationBuilder<double>(
+                            tween: Tween<double>(begin: 0, end: 1),
+                            duration: const Duration(milliseconds: 500),
+                            curve: Curves.easeOut,
+                            builder: (BuildContext context, double opacity,
+                                Widget? child) {
+                              return Opacity(
+                                opacity: opacity,
+                                child: Text(
+                                  "${snapshot.data ?? 0}",
+                                  style: TextStyle(
+                                    fontSize: 42,
+                                    color: AppColor.primary_blue,
+                                  ),
+                                ),
+                              );
+                            },
                           );
                         }),
                   ],
@@ -363,12 +452,23 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     StreamBuilder<dynamic>(
                         stream: _bloc.minHeartBeatStream,
                         builder: (context, snapshot) {
-                          return Text(
-                            "${snapshot.data ?? 0}",
-                            style: TextStyle(
-                              fontSize: 42,
-                              color: AppColor.primary_blue,
-                            ),
+                          return TweenAnimationBuilder<double>(
+                            tween: Tween<double>(begin: 0, end: 1),
+                            duration: const Duration(milliseconds: 500),
+                            curve: Curves.easeOut,
+                            builder: (BuildContext context, double opacity,
+                                Widget? child) {
+                              return Opacity(
+                                opacity: opacity,
+                                child: Text(
+                                  "${snapshot.data ?? 0}",
+                                  style: TextStyle(
+                                    fontSize: 42,
+                                    color: AppColor.primary_blue,
+                                  ),
+                                ),
+                              );
+                            },
                           );
                         }),
                   ],
@@ -386,12 +486,23 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     StreamBuilder<dynamic>(
                         stream: _bloc.avgHeartBeatStream,
                         builder: (context, snapshot) {
-                          return Text(
-                            "${snapshot.data ?? 0}",
-                            style: TextStyle(
-                              fontSize: 42,
-                              color: AppColor.primary_blue,
-                            ),
+                          return TweenAnimationBuilder<double>(
+                            tween: Tween<double>(begin: 0, end: 1),
+                            duration: const Duration(milliseconds: 500),
+                            curve: Curves.easeOut,
+                            builder: (BuildContext context, double opacity,
+                                Widget? child) {
+                              return Opacity(
+                                opacity: opacity,
+                                child: Text(
+                                  "${snapshot.data ?? 0}",
+                                  style: TextStyle(
+                                    fontSize: 42,
+                                    color: AppColor.primary_blue,
+                                  ),
+                                ),
+                              );
+                            },
                           );
                         }),
                   ],
@@ -406,6 +517,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
   @override
   void dispose() {
+    _bloc.dispose();
     super.dispose();
   }
 }
