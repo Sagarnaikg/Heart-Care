@@ -1,16 +1,44 @@
-# heart_beat_monitor
 
-A new Flutter project.
+# Heart care
 
-## Getting Started
+Heart care is a mobile app which can be used to monitor heart rate. When the user places his/her finger on the reader the app starts scanning the heart beat for a minute and displays the total, max, min, and avg beats at the end of the timer.
 
-This project is a starting point for a Flutter application.
 
-A few resources to get you started if this is your first Flutter project:
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
+## Demo
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+Insert gif or link to demo
+
+  
+## Features
+
+- The app fully follows minimalism so it doesn't comes with too many features except the ones which serves the primary goal of the app.
+- It is built in dark mode so it doesn't hurt users eye's at night usage.
+- It stores all the data locally so the data doesn't get erased after the usage and fully protected and can be accessed without an internet.
+
+  
+## Installation 
+
+You can try our app by running below commands
+
+```bash 
+    git clone https://github.com/Sagarnaikg/Heart-Care/
+    cd Heart-Care
+    Flutter run
+```
+( Make sure to install Flutter sdk before runing the project )
+
+Or You can directly install our app through the .apk file which will be published soon.
+    
+## Libraries and Packages
+
+- **Flutter** for developing the app.
+- **hared_preferences** for local storage.
+- **syncfusion_flutter_charts, syncfusion_flutter_gauges** for displaying the live chart and and timer.
+- **rxdart** for state management.
+  
+## Screenshots
+
+![App Screenshot](https://via.placeholder.com/468x300?text=App+Screenshot+Here)
+
+  
