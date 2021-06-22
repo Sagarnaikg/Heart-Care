@@ -7,7 +7,7 @@ Heart care is a mobile app which can be used to monitor heart rate. When the use
 
 ## Demo
 
-Insert gif or link to demo
+![App Screenshot](https://github.com/Sagarnaikg/Heart-Care/blob/master/Dribbble%20shot%20HD%20-%202.png)
 
   
 ## Features
@@ -39,6 +39,6 @@ Or You can directly install our app through the .apk file which will be publishe
   
 ## Screenshots
 
-![App Screenshot](https://via.placeholder.com/468x300?text=App+Screenshot+Here)
+![App Screenshot](https://github.com/Sagarnaikg/Heart-Care/blob/master/Dribbble%20shot%20HD%20-%202.png)
 
   
