@@ -33,7 +33,7 @@ Or You can directly install our app through the .apk file which will be publishe
 ## Libraries and Packages
 
 - **Flutter** for developing the app.
-- **hared_preferences** for local storage.
+- **Shared_preferences** for local storage.
 - **syncfusion_flutter_charts, syncfusion_flutter_gauges** for displaying the live chart and and timer.
 - **rxdart** for state management.
   
